@@ -18,6 +18,7 @@
   position: relative;
   .search_icon {
     position: absolute;
+    cursor: pointer;
     svg {
       fill: var(--selected-primary-text);
     }

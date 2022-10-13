@@ -3,6 +3,7 @@ import setTheme from "./utils/utils";
 import Form from "react-bootstrap/Form";
 import { MdOutlineModeNight } from "react-icons/md";
 import { BsSun } from "react-icons/bs";
+// import ComponentLogo from "./utils/Loader/component.logo";
 export default function ThemeSetter() {
   const [mode, setMode] = useState("dark");
   useEffect(() => {
@@ -15,6 +16,7 @@ export default function ThemeSetter() {
   };
   return (
     <div className="themeSetter">
+      {/* <ComponentLogo /> */}
       <Form>
         {mode === "dark" && (
           <Form.Label style={{ marginTop: "0.24em" }}>

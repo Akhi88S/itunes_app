@@ -31,8 +31,11 @@ code {
 }
 .themeSetter {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   padding: 0.5em;
+  .logo {
+    width: 50px;
+  }
   form {
     .form-switch input {
       cursor: pointer;

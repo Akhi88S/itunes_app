@@ -12,9 +12,8 @@ const TOKEN_URL = "https://accounts.spotify.com/api/token";
 
 let cache = new Map();
 
-var c_id = "e18b6afda7e34f8ba0783a926fe70dba";
-var ct_id = "e6f81bbe9f9f45d5a9356d181f400a2c";
-
+var c_id = process.env.REACT_APP_C_ID;
+var ct_id = process.env.REACT_APP_CT_ID;
 navigateToMainPage$.subscribe((isNavigate) => {
   if (isNavigate) {
     cache.clear();
