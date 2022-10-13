@@ -13,11 +13,12 @@ function SearchBar(props: searchBarProps) {
   const searchRef = useRef<any>(null);
   const searchHandler = async (e: any, iconClicked?: boolean) => {
     const searchVal = searchRef.current.value;
-    if (e.key === "Enter") {
-      navigate(`track-search/${searchVal}`);
-    } else if (iconClicked) {
-      navigate(`track-search/${searchVal}`);
-    }
+    if (searchVal)
+      if (e.key === "Enter") {
+        navigate(`track-search/${searchVal}`);
+      } else if (iconClicked) {
+        navigate(`track-search/${searchVal}`);
+      }
   };
   return (
     <span className="searchBar_wrapper">
