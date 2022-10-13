@@ -1,0 +1,24 @@
+.loader {
+  position: absolute;
+  top: 40px;
+  background: var(--selected-primary-bg);
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  svg {
+    fill: var(--selected-primary-text);
+    path:first-child {
+      fill: var(--selected-primary-text);
+    }
+    path:last-child {
+      fill: var(--selected-primary-bg);
+    }
+  }
+}
+.logo {
+  fill: var(--selected-primary-text);
+  opacity: 1;
+}

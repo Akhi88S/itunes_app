@@ -1,25 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState, useRef } from "react";
+import RoutesConfiguration from "./Routes/routes";
+import { getToken, oAuthToken$ } from "./api/music_lib";
+import ThemeSetter from "./ThemeSetter";
 
 function App() {
+  const [token, setToken] = useState<string>("");
+  let interVal = useRef<any>(null);
+  useEffect(() => {
+    getToken();
+    interVal.current && clearInterval(interVal.current);
+    interVal.current = setInterval(() => {
+      getToken();
+    }, 1000 * 60 * 30); //30mins
+    return () => {
+      interVal.current && clearInterval(interVal.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    const tokenSubscription = oAuthToken$.subscribe((val: string) =>
+      setToken(val)
+    );
+    return () => {
+      tokenSubscription.unsubscribe();
+    };
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <ThemeSetter />
+      <div className="App">{token && <RoutesConfiguration />}</div>
+    </>
   );
 }
 

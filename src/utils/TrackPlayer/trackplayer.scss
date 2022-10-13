@@ -1,0 +1,43 @@
+.rhap_container {
+  background-color: var(--selected-primary-bg);
+  border: 2px solid var(--selected-primary-text);
+}
+.audio_player {
+  position: sticky;
+  bottom: 10px;
+  width: 100%;
+  border-radius: 20px;
+  z-index: 52;
+  .rhap_main {
+    padding: 1.2em;
+  }
+  .rhap_time {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .rhap_progress-filled {
+    background-color: var(--selected-primary-text);
+  }
+  .rhap_progress-indicator {
+    background: var(--selected-primary-text);
+  }
+  .rhap_repeat-button {
+    color: var(--selected-primary-text);
+  }
+  .rhap_main-controls-button {
+    color: var(--selected-primary-text);
+  }
+  .rhap_volume-button {
+    color: var(--selected-primary-text);
+  }
+  .rhap_volume-indicator {
+    background: var(--selected-primary-text);
+  }
+  .rhap_volume-filled {
+    background: var(--selected-primary-text);
+  }
+  .rhap_time {
+    color: var(--selected-primary-text);
+  }
+}
