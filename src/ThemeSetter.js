@@ -4,9 +4,9 @@ import Form from "react-bootstrap/Form";
 import { MdOutlineModeNight } from "react-icons/md";
 import { BsSun } from "react-icons/bs";
 export default function ThemeSetter() {
-  const [mode, setMode] = useState("light");
+  const [mode, setMode] = useState("dark");
   useEffect(() => {
-    setTheme("light");
+    setTheme("dark");
   }, []);
   const themeHandler = (e) => {
     let updatedMode = mode !== "dark" ? "dark" : "light";
@@ -25,6 +25,7 @@ export default function ThemeSetter() {
           type="switch"
           id="theme-toggle"
           className="custom-control-input"
+          defaultChecked={true}
           onChange={themeHandler}
         />
         {mode === "light" && (
