@@ -22,9 +22,7 @@ function Tracks({ removeLoaderHandler }: any) {
       "rhap_play-pause-button"
     )[0];
     function callback(mutations: any) {
-      console.log("mutations", mutations);
       let playerMode = mutations[0].target?.["ariaLabel"];
-      console.log("ref", elementRef.current);
       if (elementRef.current) {
         console.log(playerMode);
         if (playerMode === "Pause") {
