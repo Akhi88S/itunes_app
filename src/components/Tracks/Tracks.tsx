@@ -24,7 +24,6 @@ function Tracks({ removeLoaderHandler }: any) {
     function callback(mutations: any) {
       let playerMode = mutations[0].target?.["ariaLabel"];
       if (elementRef.current) {
-        console.log(playerMode);
         if (playerMode === "Pause") {
           setTrackPaused({ paused: false, showIcon: false });
         } else {
