@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import HomePage from "../components/HomePage/HomePage";
 import SearchBar from "../utils/SearchBar/SearchBar";
 import Sidebar from "../components/Sidebar/Sidebar";
@@ -7,11 +7,15 @@ import Tracks from "../components/Tracks/Tracks";
 import "../components/common.scss";
 import TopArtists from "../components/TopArtists/TopArtists";
 import ComponentLogo from "../utils/Loader/component.logo";
+import useDimensions from "../utils/hooks/useDimesnions";
+
 function RoutesConfiguration() {
+  const { isMobile } = useDimensions();
+
   return (
-    <Router>
+    <>
       <div className="header">
-        <ComponentLogo />
+        {isMobile ? null : <ComponentLogo />}
         <SearchBar searchStr="" />
       </div>
       <div className="sideBar">
@@ -24,7 +28,7 @@ function RoutesConfiguration() {
         <Route path="/track-search/:searchItem" element={<Tracks />} />
         <Route path="/" element={<HomePage />} />
       </Routes>
-    </Router>
+    </>
   );
 }
 

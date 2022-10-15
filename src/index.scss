@@ -29,12 +29,19 @@ code {
   --dark-primary-bg: #333;
   --dark-primary-text: #ffff;
 }
+.logo {
+  svg {
+    fill: var(--selected-primary-text);
+    opacity: 1;
+  }
+  cursor: pointer;
+}
 .themeSetter {
   display: flex;
-  justify-content: flex-end;
   padding: 0.5em;
   .logo {
-    width: 50px;
+    font-size: 40px;
+    margin-top: -12px;
   }
   form {
     .form-switch input {
@@ -46,7 +53,7 @@ code {
     }
     svg {
       fill: var(--selected-primary-text);
-      font-size: 28px;
+      font-size: 20px;
       margin-left: 0.25em;
       margin-right: 0.25em;
     }

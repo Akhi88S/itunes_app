@@ -3,8 +3,12 @@ import setTheme from "./utils/utils";
 import Form from "react-bootstrap/Form";
 import { MdOutlineModeNight } from "react-icons/md";
 import { BsSun } from "react-icons/bs";
-// import ComponentLogo from "./utils/Loader/component.logo";
+import ComponentLogo from "./utils/Loader/component.logo";
+import useDimensions from "./utils/hooks/useDimesnions";
+
 export default function ThemeSetter() {
+  const { isMobile } = useDimensions();
+
   const [mode, setMode] = useState("dark");
   useEffect(() => {
     setTheme("dark");
@@ -15,8 +19,11 @@ export default function ThemeSetter() {
     setMode(updatedMode);
   };
   return (
-    <div className="themeSetter">
-      {/* <ComponentLogo /> */}
+    <div
+      className="themeSetter"
+      style={{ justifyContent: isMobile ? "space-between" : "flex-end" }}
+    >
+      {isMobile ? <ComponentLogo /> : null}
       <Form>
         {mode === "dark" && (
           <Form.Label style={{ marginTop: "0.24em" }}>
