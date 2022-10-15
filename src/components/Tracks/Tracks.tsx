@@ -15,6 +15,16 @@ function Tracks({ removeLoaderHandler }: any) {
     paused: false,
     showIcon: false,
   });
+
+  useEffect(() => {
+    window.addEventListener("clear_track_player", () => {
+      setTrackPlaying("");
+      setTrackPaused({
+        paused: false,
+        showIcon: false,
+      });
+    });
+  }, []);
   const elementRef = useRef(false);
 
   useEffect(() => {
