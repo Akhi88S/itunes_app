@@ -39,68 +39,10 @@
 }
 .tile_container {
   .tile_cover {
-    border-radius: 30px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    border-color: var(--selected-primary-text);
   }
-}
-.artists_content {
-  display: flex;
-  overflow-x: scroll;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* Internet Explorer 10+ */
-  .forward_arrow {
-    position: absolute;
-    z-index: 50;
-    right: 0;
-    top: 480px;
-    cursor: pointer;
-    svg {
-      font-size: 30px;
-      fill: var(--selected-primary-bg);
-      background-color: var(--selected-primary-text);
-      border-radius: 50%;
-      padding: 0.2em;
-    }
-  }
-  .backward_arrow {
-    position: absolute;
-    z-index: 50;
-    left: 0;
-    top: 480px;
-    cursor: pointer;
-    svg {
-      font-size: 30px;
-      fill: var(--selected-primary-bg);
-      background-color: var(--selected-primary-text);
-      border-radius: 50%;
-      padding: 0.2em;
-    }
-  }
-  .artists_circle {
-    margin: 0.5em;
-    .tile_cover {
-      clip-path: circle();
-      width: 180px;
-      height: 180px;
-    }
-    .tile_name {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--selected-primary-text);
-      text-align: left;
-      margin: 0.8em 0 2em 0.4em;
-    }
-  }
-}
-
-.artists_content::-webkit-scrollbar {
-  /* WebKit */
-  width: 0;
-  height: 0;
-}
-
-.order_artists {
-  flex-wrap: wrap;
-  justify-content: space-evenly;
 }
 
 .tracks_content {
@@ -110,7 +52,7 @@
   justify-content: space-evenly;
   .track_container {
     margin: 0.5em;
-    width: 300px;
+    width: 200px;
 
     .tile_name {
       font-size: 18px;
@@ -118,6 +60,7 @@
       color: var(--selected-primary-text);
       text-align: left;
       margin: 0.8em 0 2em 0.4em;
+      max-height: 80px;
     }
   }
   .no_data_found {

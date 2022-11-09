@@ -2,39 +2,43 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { BiHomeAlt } from "react-icons/bi";
 import { HiHashtag } from "react-icons/hi";
-import { BsFillPeopleFill } from "react-icons/bs";
+// import { BsFillPeopleFill } from "react-icons/bs";
 import Accordion from "react-bootstrap/Accordion";
 import useDimensions from "../../utils/hooks/useDimesnions";
-import { setNavigateToMainPage } from "../../api/music_lib";
-
+import { useAppDispatch, useAppSelector } from "../../Redux/hooks";
+import { types } from "../../Redux/types";
 const navigationLinksData = [
   {
-    name: "Home",
+    name: "Top Albums",
     path: "/",
     icon: <BiHomeAlt />,
     id: "discover",
   },
   {
-    name: "All Charts",
-    path: "/all-charts",
+    name: "All Favorites",
+    path: "/all-favorites",
     icon: <HiHashtag />,
     id: "topCharts",
   },
-  {
-    name: "All Artists",
-    path: "/all-artists",
-    icon: <BsFillPeopleFill />,
-    id: "topArtists",
-  },
+  // {
+  //   name: "Categories",
+  //   path: "/all-categories",
+  //   icon: <BsFillPeopleFill />,
+  //   id: "all-categories",
+  // },
 ];
 const Sidebar = (props: sliderBarProps) => {
+  const dispatch = useAppDispatch();
+  const { tracksReadOnlyData } = useAppSelector(
+    (state: any) => state.tracksReducer
+  );
   const navigate = useNavigate();
   const { isMobile } = useDimensions();
   const navigationHandler = (path: string, id: string) => {
-    if (path === "/") {
-      setNavigateToMainPage(true);
-    }
     navigate(path);
+    if (path === "/") {
+      dispatch({ type: types.GET_TRACKS, payload: tracksReadOnlyData });
+    }
   };
 
   const NavigationLinksRender = () => {

@@ -1,97 +1,101 @@
-import React, { useEffect, useRef, useState } from "react";
-import { getTracks, getArtistTracks, getSearchData } from "../../api/music_lib";
+import React, { useEffect, useState } from "react";
+import { getTracks } from "../../Redux/actions/tracksActions";
+
 import Tile from "../../utils/TileComponent/TileComponent";
-import Trackplayer from "../../utils/TrackPlayer/Trackplayer";
+import TrackInfo from "../../utils/TrackInfo/TrackInfo";
+
 import ComponentLoader from "../../utils/Loader/component.loader";
+import { types } from "../../Redux/types";
+import { useAppSelector, useAppDispatch } from "../../Redux/hooks";
+import { useLocation } from "react-router-dom";
 
-import { useParams } from "react-router-dom";
 function Tracks({ removeLoaderHandler }: any) {
-  let { name, id, searchItem } = useParams();
-
+  const location = useLocation();
+  const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const [tracks, setTracks] = useState<topCharts>([{ id: "", name: "" }]);
-  const [trackPlaying, setTrackPlaying] = useState<string>("");
-  const [trackPaused, setTrackPaused] = useState({
-    paused: false,
-    showIcon: false,
-  });
+  const { tracks, tracksReadOnlyData } = useAppSelector(
+    (state: any) => state.tracksReducer
+  );
+  const [detailedInfo, setDetailedInfo] = useState({ data: {}, show: false }); //track detailed info
+  const [favoritesFound, setfavoritesFound] = useState(-1);
 
   useEffect(() => {
-    window.addEventListener("clear_track_player", () => {
-      setTrackPlaying("");
-      setTrackPaused({
-        paused: false,
-        showIcon: false,
-      });
-    });
-  }, []);
-  const elementRef = useRef(false);
-
-  useEffect(() => {
-    const element: any = document.getElementsByClassName(
-      "rhap_play-pause-button"
-    )[0];
-    function callback(mutations: any) {
-      let playerMode = mutations[0].target?.["ariaLabel"];
-      if (elementRef.current) {
-        if (playerMode === "Pause") {
-          setTrackPaused({ paused: false, showIcon: false });
-        } else {
-          setTrackPaused({ paused: true, showIcon: true });
-        }
-      } else {
-        elementRef.current = true;
-      }
-    }
-    if (element) {
-      let observerOptions = {
-        attributes: true,
-        attributeFilter: ["aria-label"],
-      };
-      var observer = new MutationObserver(callback);
-      observer.observe(element, observerOptions);
-    }
-    return () => {
-      observer?.disconnect();
-    };
-  });
-
-  useEffect(() => {
-    setIsLoading(true);
-    if (id) {
-      getArtistTracks(id)
-        .then((allTracksData: any) => {
-          setTracks(allTracksData);
+    if (!tracksReadOnlyData.length) {
+      setIsLoading(true);
+      dispatch(getTracks())
+        .then((tracksData: any) => {
           setIsLoading(false);
+          removeLoaderHandler && removeLoaderHandler("tracks");
         })
         .catch((err: any) => {
           console.log("err", err);
           setIsLoading(false);
-        });
-    } else if (searchItem) {
-      getSearchData(searchItem)
-        .then((searchData: any) => {
-          setTracks(searchData);
-          setIsLoading(false);
-        })
-        .catch((err: any) => {
-          console.log("err", err);
-          setIsLoading(false);
+          removeLoaderHandler && removeLoaderHandler("tracks");
         });
     } else {
-      getTracks()
-        .then((tracksData: any) => {
-          setTracks(tracksData);
-          setIsLoading(false);
-          removeLoaderHandler && removeLoaderHandler("tracks");
-        })
-        .catch((err: any) => {
-          console.log("err", err);
-          setIsLoading(false);
-          removeLoaderHandler && removeLoaderHandler("tracks");
-        });
+      console.log("tracksReadOnlyData", tracksReadOnlyData);
+      dispatch({ type: types.GET_TRACKS, payload: tracksReadOnlyData });
+      removeLoaderHandler && removeLoaderHandler("tracks");
     }
-  }, [id, searchItem, removeLoaderHandler]);
+    // eslint-disable-next-line
+  }, [removeLoaderHandler]);
+
+  const showDetailedInfoHandler = (e: any) => {
+    const dataId = e.target?.closest(".track_container")?.dataset?.id;
+    if (dataId) {
+      const selectedTrack = tracks.find(
+        (track: any) => track?.id?.attributes?.["im:id"] === dataId
+      );
+      setDetailedInfo({ data: selectedTrack, show: true });
+    }
+  };
+
+  const addToFav = (addToFavTrack: any) => {
+    let modifiedTrackIndex = tracks.findIndex(
+      (track: any) =>
+        track?.id?.attributes?.["im:id"] ===
+        addToFavTrack?.id?.attributes?.["im:id"]
+    );
+
+    //track data modify
+    const tracksTemp = [...tracks];
+    const itemToModify = tracksTemp[modifiedTrackIndex];
+    tracksTemp[modifiedTrackIndex] = {
+      ...tracksTemp[modifiedTrackIndex],
+      isFavorite: tracksTemp[modifiedTrackIndex]?.isFavorite ? false : true,
+    };
+
+    dispatch({ type: types.GET_TRACKS, payload: tracksTemp });
+
+    //all data modify
+    let dataModifyIndex = tracksReadOnlyData.findIndex(
+      (trackItem: any) =>
+        trackItem?.id?.attributes?.["im:id"] ===
+        itemToModify?.id?.attributes?.["im:id"]
+    );
+
+    let modifiedReadData = [...tracksReadOnlyData];
+    modifiedReadData[dataModifyIndex] = {
+      ...modifiedReadData[dataModifyIndex],
+      isFavorite: modifiedReadData[dataModifyIndex]?.isFavorite ? false : true,
+    };
+
+    dispatch({
+      type: types.GET_INITIAL_TRACKS_DATA,
+      payload: modifiedReadData,
+    });
+    setDetailedInfo({ data: tracksTemp[modifiedTrackIndex], show: true });
+  };
+  const closeDetailedInfo = () => {
+    setDetailedInfo({ data: {}, show: false });
+  };
+
+  //favorites checking
+  useEffect(() => {
+    if (location.pathname === "/all-favorites") {
+      setfavoritesFound(tracks.findIndex((track: any) => track.isFavorite));
+    }
+  }, [location.pathname, tracks]);
   return (
     <>
       {!removeLoaderHandler && isLoading ? (
@@ -99,55 +103,76 @@ function Tracks({ removeLoaderHandler }: any) {
       ) : (
         <>
           <p className="content_heading">
-            {id
-              ? `${name} Charts`
-              : searchItem
-              ? `Search Results for ${searchItem}`
-              : "Top Charts"}{" "}
+            {location?.pathname === "/all-favorites"
+              ? "All Favourites"
+              : "Top Albums"}{" "}
           </p>
-          <div className="tracks_content">
-            {tracks?.map((chart: chartDataItem) => {
+          <div className="tracks_content" onClick={showDetailedInfoHandler}>
+            {tracks?.map((chart: any) => {
               return (
-                <div key={chart?.id} className="track_container">
-                  <Tile
-                    imgSrc={chart?.album?.images?.[1]?.url}
-                    imgWidth={chart?.album?.images?.[1]?.width}
-                    imgHeight={chart?.album?.images?.[1]?.height}
-                    name={chart?.name}
-                    previewUrl={chart?.preview_url}
-                    setTrackPlaying={setTrackPlaying}
-                    trackPlaying={trackPlaying}
-                    setTrackPaused={setTrackPaused}
-                    trackPaused={trackPaused}
-                  />
-                </div>
+                <>
+                  {location?.pathname === "/all-favorites" &&
+                  chart?.isFavorite ? (
+                    <div
+                      key={chart?.id?.attributes?.["im:id"]}
+                      className="track_container"
+                      data-id={chart?.id?.attributes?.["im:id"]}
+                    >
+                      <Tile
+                        imgSrc={
+                          chart?.["im:image"]?.[chart?.["im:image"]?.length - 1]
+                            ?.label
+                        }
+                        imgHeight={
+                          chart?.["im:image"]?.[chart?.["im:image"]?.length - 1]
+                            ?.attributes?.height
+                        }
+                        name={chart?.["im:name"]?.label}
+                      />
+                    </div>
+                  ) : null}
+                  {location?.pathname !== "/all-favorites" && (
+                    <div
+                      key={chart?.id?.attributes?.["im:id"]}
+                      className="track_container"
+                      data-id={chart?.id?.attributes?.["im:id"]}
+                    >
+                      <Tile
+                        imgSrc={
+                          chart?.["im:image"]?.[chart?.["im:image"]?.length - 1]
+                            ?.label
+                        }
+                        imgHeight={
+                          chart?.["im:image"]?.[chart?.["im:image"]?.length - 1]
+                            ?.attributes?.height
+                        }
+                        name={chart?.["im:name"]?.label}
+                      />
+                    </div>
+                  )}
+                </>
               );
             })}
-            {!tracks?.length && (
+
+            {/* no data cases */}
+            {(!tracks?.length ||
+              (location.pathname === "/all-favorites" &&
+                favoritesFound === -1)) && (
               <p className="no_data_found">Oops, no data found</p>
             )}
-
-            {trackPlaying && <Trackplayer trackUrl={trackPlaying || ""} />}
           </div>
         </>
+      )}
+      {detailedInfo?.show && (
+        <TrackInfo
+          trackData={detailedInfo?.data}
+          closeDetailedInfo={closeDetailedInfo}
+          addToFav={addToFav}
+        />
       )}
     </>
   );
 }
 
 export default React.memo(Tracks);
-type topCharts = Array<chartDataItem>;
-type chartDataItem = {
-  id: string;
-  name: string;
-  album?: albumItem;
-  preview_url?: string;
-  artists?: Array<any>;
-};
-type albumItem = {
-  id?: string;
-  name?: string;
-  images?: Array<imagesType>;
-};
-
-type imagesType = { url?: string; width: number; height: number };
+// type imagesType = { url?: string; width: number; height: number };

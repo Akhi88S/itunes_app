@@ -1,40 +1,50 @@
 import React, { useRef } from "react";
 import { BiSearch } from "react-icons/bi";
-import { useNavigate } from "react-router-dom";
-
+import { useAppSelector, useAppDispatch } from "../../Redux/hooks";
+import { types } from "../../Redux/types";
 import "./SearchBar.scss";
-type searchBarProps = {
-  searchStr: string;
-};
+import { useLocation } from "react-router-dom";
 
-function SearchBar(props: searchBarProps) {
-  const navigate = useNavigate();
+function SearchBar() {
+  const location = useLocation();
+  const dispatch = useAppDispatch();
+  const { tracksReadOnlyData } = useAppSelector(
+    (state: any) => state.tracksReducer
+  );
 
   const searchRef = useRef<any>(null);
+
   const searchHandler = async (e: any, iconClicked?: boolean) => {
-    const searchVal = searchRef.current.value;
-    if (searchVal) {
-      if (e.key === "Enter") {
-        navigate(`track-search/${searchVal}`);
-        window.dispatchEvent(new CustomEvent("clear_track_player"));
-      } else if (iconClicked) {
-        navigate(`track-search/${searchVal}`);
-        window.dispatchEvent(new CustomEvent("clear_track_player"));
-      }
+    const searchVal = iconClicked ? searchRef.current.value : e.target.value;
+    if (searchVal || iconClicked) {
+      const filteredTracks = tracksReadOnlyData.filter((track: any) => {
+        return track?.title?.label
+          ?.toLowerCase()
+          ?.includes(searchVal.toLowerCase());
+      });
+      //filtered tracks(search)
+      dispatch({ type: types.GET_TRACKS, payload: filteredTracks });
+    } else {
+      //get all tracks
+      dispatch({ type: types.GET_TRACKS, payload: tracksReadOnlyData });
     }
   };
   return (
     <span className="searchBar_wrapper">
-      <input
-        type="text"
-        ref={searchRef}
-        className="searchBar_input"
-        placeholder="Search Track"
-        onKeyDown={searchHandler}
-      />
-      <span className="search_icon" onClick={(e) => searchHandler(e, true)}>
-        <BiSearch />
-      </span>
+      {location.pathname !== "/all-favorites" && (
+        <>
+          <input
+            type="text"
+            ref={searchRef}
+            className="searchBar_input"
+            placeholder="Search Track"
+            onKeyUp={searchHandler}
+          />
+          <span className="search_icon" onClick={(e) => searchHandler(e, true)}>
+            <BiSearch />
+          </span>
+        </>
+      )}
     </span>
   );
 }
