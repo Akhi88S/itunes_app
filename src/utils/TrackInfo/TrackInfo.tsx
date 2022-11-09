@@ -24,12 +24,12 @@ const TrackInfo = (props: TrackProps) => {
         </div>
         <div className="track_details">
           <p>{trackData?.["im:name"]?.label}</p>
-          <span className="icon" onClick={() => addToFav(trackData)}>
-            {trackData?.isFavorite ? <AiFillLike /> : <BiLike />}
-          </span>
           <p>{trackData?.["im:artist"]?.label}</p>
           <p>{trackData?.["im:releaseDate"]?.attributes?.label}</p>
           <p> {trackData?.["im:price"]?.label}</p>
+          <span className="icon" onClick={() => addToFav(trackData)}>
+            {trackData?.isFavorite ? <AiFillLike /> : <BiLike />}
+          </span>
         </div>
         <div className="close_info" onClick={closeDetailedInfo}>
           <AiOutlineCloseCircle />

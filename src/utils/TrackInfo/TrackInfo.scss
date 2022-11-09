@@ -16,6 +16,9 @@
   padding: 1em;
   background-color: var(--selected-primary-text);
 
+  @media only screen and (max-width: 500px) {
+    width: 100%;
+  }
   .img_container {
     width: 100%;
     margin-bottom: 1.2em;
@@ -50,7 +53,7 @@
       fill: var(--selected-primary-bg);
       font-size: 30px;
       position: absolute;
-      bottom: 10px;
+      bottom: 20px;
       right: 20px;
     }
   }
